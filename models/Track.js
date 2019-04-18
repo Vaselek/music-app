@@ -14,6 +14,10 @@ const TrackSchema = new Schema({
     duration: {
         type: Number,
         required: true
+    },
+    sequence: {
+        type: Number,
+        required: true
     }
 })
 

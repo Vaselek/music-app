@@ -8,11 +8,11 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
     if (req.query.album)
-        Track.find({album: new ObjectId(req.query.album)})
+        return Track.find({album: new ObjectId(req.query.album)})
             .then(tracks => res.send(tracks))
             .catch(() => res.sendStatus(500))
     if (req.query.artist) {
-        Album.find({artist: new ObjectId(req.query.artist)})
+        return Album.find({artist: new ObjectId(req.query.artist)})
             .then(albums => {
                 const tracks = albums.map(album => Track.find({ album: new ObjectId(album._id) }))
                 Promise.all(tracks).then(function(results) {
@@ -21,7 +21,6 @@ router.get('/', (req, res) => {
 
             })
             .catch(() => res.sendStatus(500))
-        return;
     }
     Track.find()
         .then(tracks => res.send(tracks))

@@ -5,6 +5,7 @@ const nanoid = require('nanoid');
 const config = require('../config');
 
 const Album = require('../models/Album');
+const Track = require('../models/Track');
 const ObjectId = require('mongoose').Types.ObjectId;
 
 
@@ -23,7 +24,7 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
     if (req.query.artist)
-        Album.find({artist: new ObjectId(req.query.artist)})
+        return Album.find({artist: new ObjectId(req.query.artist)}).sort([['issuedAt', 1]])
             .then(albums => res.send(albums))
             .catch(() => res.sendStatus(500))
     Album.find()

@@ -24,13 +24,22 @@ const run = async () => {
         {
             title: 'Recovery',
             artist: artists[0]._id,
-            issuedAt: '2018-10-05T14:48:00.000',
+            issuedAt: '2015-10-05T14:48:00.000',
+            issuedYear: '2015',
             image: 'recovery_album.jpg'
+        },
+        {
+            title: 'Forever',
+            artist: artists[0]._id,
+            issuedAt: '2016-10-05T14:48:00.000',
+            issuedYear: '2016',
+            image: 'lp_forever_album.jpg'
         },
         {
             title: 'Simulation Theory',
             artist: artists[1]._id,
             issuedAt: '2018-10-05T14:48:00.000',
+            issuedYear: '2018',
             image: 'simulation_theory_album.jpg'
         }
     )
@@ -40,16 +49,19 @@ const run = async () => {
             title: 'Lost on you',
             album: albums[0]._id,
             duration: 2.30,
+            sequence: 1
         },
         {
             title: 'Lost on you 2',
             album: albums[0]._id,
             duration: 2.30,
+            sequence: 2
         },
         {
             title: 'Algorithm',
-            album: albums[1]._id,
+            album: albums[2]._id,
             duration: 3.00,
+            sequence: 1
         }
     )
 
