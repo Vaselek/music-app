@@ -8,7 +8,7 @@ const router = express.Router();
 
 router.get('/', (req, res) => {
     if (req.query.album)
-        return Track.find({album: new ObjectId(req.query.album)})
+        return Track.find({album: new ObjectId(req.query.album)}).sort([['sequence', 1]])
             .then(tracks => res.send(tracks))
             .catch(() => res.sendStatus(500))
     if (req.query.artist) {
