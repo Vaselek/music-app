@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const nanoid = require("nanoid");
+const nanoid = require('nanoid');
 const SALT_WORK_FACTOR = 10;
 const Schema = mongoose.Schema;
 
@@ -8,14 +8,22 @@ const UserSchema = new Schema({
     username: {
         type: String,
         required: true,
-        unique: true
+        validate: {
+            validator: async function(value) {
+                if (!this.isModified('username')) return;
+                const user = await User.findOne({username: value});
+                if (user) throw new Error();
+            },
+            message: 'This user already registered'
+        }
     },
     password: {
         type: String,
         required: true
     },
     token: {
-        type: String
+        type: String,
+        required: true
     }
 });
 
@@ -25,8 +33,6 @@ UserSchema.methods.checkPassword = function(password) {
 
 UserSchema.methods.generateToken = function() {
     this.token = nanoid();
-    this.save();
-    return this.token;
 }
 
 UserSchema.pre('save', async function(next) {
