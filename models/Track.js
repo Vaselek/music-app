@@ -18,7 +18,13 @@ const TrackSchema = new Schema({
     sequence: {
         type: Number,
         required: true
+    },
+    published: {
+        type: Boolean,
+        default: false,
+        enum: [false, true]
     }
+
 })
 
 const Track = mongoose.model('Track', TrackSchema);

@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 const config = require('./config');
+const nanoid = require('nanoid');
 
 const Artist = require('./models/Artist');
 const Album = require('./models/Album');
 const Track = require('./models/Track');
+const User = require('./models/User');
 
 const run = async () => {
     await mongoose.connect(config.dbUrl, config.mongoOptions);
@@ -15,9 +17,21 @@ const run = async () => {
         await collection.drop();
     }
 
+    await User.create({
+        username: 'user',
+        password: '123',
+        role: 'user',
+        token: nanoid()
+    }, {
+        username: 'admin',
+        password: '123',
+        role: 'admin',
+        token: nanoid()
+    });
+
     let artists = await Artist.create(
-        {name: 'LP', photo: 'lp.jpg', description: 'Great artist!'},
-        {name: 'Muse', photo: 'muse.jpg', description: 'Super group!'},
+        {name: 'LP', photo: 'lp.jpg', description: 'Great artist!', published: true},
+        {name: 'Muse', photo: 'muse.jpg', description: 'Super group!', published: true},
     )
 
     let albums = await Album.create(
@@ -25,45 +39,39 @@ const run = async () => {
             title: 'Recovery',
             artist: artists[0]._id,
             issuedAt: '2015-10-05T14:48:00.000',
-            issuedYear: '2015',
-            image: 'recovery_album.jpg'
+            image: 'recovery_album.jpg',
+            published: true
+
         },
         {
             title: 'Forever',
             artist: artists[0]._id,
             issuedAt: '2016-10-05T14:48:00.000',
-            issuedYear: '2016',
-            image: 'lp_forever_album.jpg'
+            image: 'lp_forever_album.jpg',
+            published: true
         },
         {
             title: 'Simulation Theory',
             artist: artists[1]._id,
             issuedAt: '2018-10-05T14:48:00.000',
-            issuedYear: '2018',
-            image: 'simulation_theory_album.jpg'
+            image: 'simulation_theory_album.jpg',
+            published: true
         }
-    )
+    );
 
-    await Track.create(
-        {
-            title: 'Lost on you',
-            album: albums[0]._id,
-            duration: 2.30,
-            sequence: 1
-        },
-        {
-            title: 'Lost on you 2',
-            album: albums[0]._id,
-            duration: 2.30,
-            sequence: 2
-        },
-        {
-            title: 'Algorithm',
-            album: albums[2]._id,
-            duration: 3.00,
-            sequence: 1
-        }
-    )
+    const trackSeeds = albums.map(album => {
+        return ['track 1', 'track 2', 'track 3', 'track 4', 'track 5'].map((track, index) => {
+            return {
+                title: track,
+                album: album._id,
+                duration: Math.floor(Math.random()*100)/10,
+                sequence: (index + 1),
+                published: true
+            }
+        })
+    });
+
+    await Track.create(trackSeeds.flat(2));
 
     await connection.close();
 };

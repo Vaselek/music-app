@@ -3,6 +3,9 @@ const express = require('express');
 const Track = require('../models/Track');
 const Album = require('../models/Album');
 const ObjectId = require('mongoose').Types.ObjectId;
+const auth = require('../middleware/auth');
+const permit = require('../middleware/permit');
+
 
 const router = express.Router();
 
@@ -32,6 +35,39 @@ router.get('/:id', (req, res) => {
         .then(result => {
             if (result) return res.send(result);
             res.sendStatus(404);
+        })
+        .catch(()=>res.sendStatus(500))
+});
+
+router.post('/', (req, res) => {
+    const trackData = {
+        title: req.body.title,
+        album: req.body.album,
+        sequence: req.body.sequence,
+        duration: req.body.duration
+
+    };
+    const track = new Track(trackData);
+    track.save()
+        .then(result => res.send(result))
+        .catch((error) => res.sendStatus(400).send(error))
+});
+
+router.delete('/:id', [auth, permit('admin')], (req, res) => {
+    Track.findById(req.params.id)
+        .then(track => {
+            track.delete();
+            return res.send({message: 'Deleted'});
+        })
+        .catch(()=>res.sendStatus(500))
+});
+
+router.post('/:id/publish', [auth, permit('admin')], (req, res) => {
+    Track.findById(req.params.id)
+        .then(track => {
+            track.published = true;
+            track.save();
+            return res.send({message: 'Published'});
         })
         .catch(()=>res.sendStatus(500))
 });

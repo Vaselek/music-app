@@ -15,12 +15,13 @@ const AlbumSchema = new Schema({
         type: Date,
         required: true
     },
-    issuedYear: {
-    type: String,
-        required: true
-    },
     image: {
         type: String
+    },
+    published: {
+        type: Boolean,
+        default: false,
+        enum: [false, true]
     }
 });
 

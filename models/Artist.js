@@ -6,14 +6,16 @@ const ArtistSchema = new Schema({
     name: {
         type: String, required: true
     },
-    surname: {
-        type: String
-    },
     photo: {
         type: String
     },
     description: {
         type: String
+    },
+    published: {
+        type: Boolean,
+        default: false,
+        enum: [false, true]
     }
 });
 
